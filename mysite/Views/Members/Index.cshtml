@@ -33,9 +33,9 @@
                                 <th>KnownAs</th>
                                 <th>lastActive</th>
                                 <th>Introduction</th>
-                                <th>Photo</th>
                                 <th>City</th>
                                 <th>Country</th>
+                                <th>Photo</th>
                                 <th>Edit</th>
                                 <th>Delete</th>
                             </tr>
@@ -50,8 +50,13 @@
 
 @section Scripts{
     <script>
+        var members;
+
         $(document).ready(function () {
-            var members = $("#members").DataTable({
+            loadDataTable();
+        });
+        function loadDataTable() {
+            members = $("#members").DataTable({
                 ajax: {
                     url: "/api/members",
                     dataSrc: ""
@@ -65,15 +70,15 @@
                     { data: "knownAs", "width": "10%" },
                     { data: "lastActive", "width": "10%" },
                     { data: "introduction", "width": "40%" },
-                    {
-                        data: "photo",
-                        render: function (data) {
-                            var img = '/content/blog/' + data;
-                            return '<img src="' + img + '"height="50px" width="50px"';
-                        }
-                    },
                     { data: "city", "width": "10%" },
                     { data: "country", "width": "10%" },
+                    {
+                        "data": "photo",
+                        "render": function (data) {
+                            var img = '/content/blog/' + data;
+                            return '<img src="' + img + '"height="50px" width="50px"/>';
+                        }
+                    },
                     {
                         data: "member",
                         render: function (data, type, member) {
@@ -102,9 +107,7 @@
                     }
                 });
             });
-        });
-
-
+        }
     </script>
     <script src="~/lib/js/menutoggle.js"></script>
 }
