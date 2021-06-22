@@ -1,0 +1,107 @@
+﻿@model IEnumerable<Member>
+@{
+    ViewData["Title"] = "List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/css/member.css" rel="stylesheet" />
+
+<!--  ======================== About Me Area ==============================  -->
+<div id="myteam" class="container about-area mt-5">
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-xs-12 mt-xl-5">
+            <div class="heading-title">
+                <h3 class="text-uppercase text-center">Meet The Team</h3>
+                <hr/>
+                <p class="para text-center">
+                    WE ARE DYNAMIC TEAM AND
+                    BUSINESS AGENCY
+                </p>
+            </div>
+        </div>
+    </div>
+    <div id="searchWrapper">
+        <input type="text"
+               name="searchBar"
+               id="searchBar"
+               placeholder="search for a Name" />
+    </div>
+    <div id="members" class="row"></div>
+</div>
+
+@section scripts{
+   <script>
+           const membersList = document.getElementById('members');
+           const searchBar = document.getElementById('searchBar');
+           const pagination_element = document.getElementById('pagination');
+           let membersCharacters = [];
+
+           let current_page = 1;
+           let rows = 5;
+           // Search Or Filter Members
+        searchBar.addEventListener('keyup', (e) => {
+            const searchString = e.target.value.toLowerCase();
+            const filteredMembers = membersCharacters.filter(members => {
+                return members.userName.toLowerCase().includes(searchString) ||
+                       members.knownAs.toLowerCase().includes(searchString);
+            });
+            displayMembers(filteredMembers);
+
+        })
+        // Display the Members
+        const loadMembers = async () => {
+            try {
+                const resp = await fetch('/api/members');
+                membersCharacters = await resp.json();
+                displayMembers(membersCharacters);
+            } catch (err) {
+               console.log(err);
+            }
+        };
+        const displayMembers = (members) => {
+            const htmlString = members.map((members) => {
+                return `
+                       <div class="col-lg-3 col-md-3 col-sm-6">
+               <div class="card mb-4">
+                   <div class="card-img-wrapper">
+                       <img style="width:100%" class="img-thumbnail" src="/Image/${members.photo}" alt="${members.knownAs}" />
+                       <ul class="list-inline member-icons animate text-center">
+                           <li class="list-inline-item">
+                               <a class="btn btn-primary btn-sm" href="/Home/details/${members.id}">
+                                   <i class="fa fa-user"></i>
+                               </a>
+                           </li>
+                           <li class="list-inline-item">
+                               <a class="btn btn-primary btn-sm" target="_blank" href="https://www.facebook.com/Icreatesites4u-690772767726869">
+                                   <i class="fa fa-facebook"></i>
+                               </a>
+                           </li>
+                           <li class="list-inline-item">
+                               <a class="btn btn-primary btn-sm" target="_blank" href="https://github.com/UxDeveloper82">
+                                   <i class="fa fa-github"></i>
+                               </a>
+                           </li>
+                       </ul>
+                   </div>
+                   <div class="card-body p-1">
+                       <h6 class="card-title text-center mb-1">
+                           <i class="fa fa-user"></i>
+                                    KnownAs: ${members.knownAs},
+                                    LastActive: ${members.lastActive}
+                       </h6>
+                       <p class="card-text text-muted text-center">From: ${members.city}</p>
+                       <p>software developer<p>
+                             
+                       </div>
+                 </div>
+                   </div>
+                   <div class="pagenumbers" id="pagination"></div>
+                       `;
+            }).join('');
+            membersList.innerHTML = htmlString;
+        }
+
+        loadMembers();
+   </script>
+
+}
