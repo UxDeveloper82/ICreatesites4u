@@ -89,7 +89,7 @@ namespace mysite.Controllers
             }
             await _repo.SaveChangeAsync();
 
-            return RedirectToAction("Post", new { id = vm.PostId });
+            return RedirectToAction("Detail", new { id = vm.PostId });
         }
     
     }
