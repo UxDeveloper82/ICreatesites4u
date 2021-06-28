@@ -51,7 +51,7 @@ namespace mysite.Controllers.Api
             return Ok(port);
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public IActionResult DeletePort([FromRoute] int id) 
         {
             if (!ModelState.IsValid)

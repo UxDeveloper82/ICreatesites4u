@@ -67,9 +67,5 @@ namespace mysite.Controllers.Api
             _repo.SaveChangesAsync();
             return Ok(member);
         }
-
-
-
-
     }
 }
