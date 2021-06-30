@@ -36,22 +36,6 @@ namespace mysite.Controllers
             return View(members);
 
         }
-
-        public IActionResult Details(int id)
-        {
-            var member = _repo.GetMember(id);
-            return View(member);
-
-        }
-
-        [HttpGet("/MemberPhoto/{memberPhoto}")]
-        [ResponseCache(CacheProfileName = "Monthly")]
-        public IActionResult MemberPhoto(string memberPhoto)
-        {
-            var mine = memberPhoto.Substring(memberPhoto.LastIndexOf('.') + 1);
-            return new FileStreamResult(_fileManager.ImageStream(memberPhoto), $"memberPhoto/{mine}");
-        }
-
         public IActionResult UserPanel()
         {
             return View();

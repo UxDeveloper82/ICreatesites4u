@@ -1,11 +1,9 @@
 ﻿@model IEnumerable<Post>
 
 @{
-
+    var title = "Post";
 }
-
 <div class="d-flex" id="wrapper">
-
     <partial name="_AdminNavbar" />
     <!-- /#sidebar-wrapper -->
     <!-- Page Content -->
@@ -15,10 +13,9 @@
             <button class="btn btn-primary" id="menu-toggle">Toggle Menu</button>
             <a class="btn btn-warning float-right" asp-controller="Panel" asp-action="Edit">Add-Post</a>
         </nav>
-
         <div class="container-fluid">
             <div class="text-center mt-3">
-                <h2>My Posts</h2>
+                <h2>@title</h2>
                 <hr />
             </div>
             <div class="table-responsive">

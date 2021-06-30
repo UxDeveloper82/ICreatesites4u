@@ -27,19 +27,19 @@ namespace mysite.Areas.Member.Controllers
             _repo = repo;
             _fileManager = fileManager;
         }
-
+        //Index Page
         public IActionResult Index()
         {
             if (User.IsInRole("Admin"))
                 return View("Index");
             return View("ReadOnlyList");
         }
-
-        public IActionResult Details()
+        //Details
+        public IActionResult Details(int id)
         {
-            
-            return View();
-         
+            var member = _repo.GetMember(id);
+            return View(member);
+
         }
 
         [Authorize(Roles = "Admin")]
@@ -116,6 +116,7 @@ namespace mysite.Areas.Member.Controllers
             var mine = memberPhoto.Substring(memberPhoto.LastIndexOf('.') + 1);
             return new FileStreamResult(_fileManager.ImageStream(memberPhoto), $"memberPhoto/{mine}");
         }
+
 
     }
 }
