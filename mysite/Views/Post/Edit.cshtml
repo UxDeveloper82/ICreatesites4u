@@ -1,7 +1,7 @@
 ﻿@model PostViewModel
 
 @{
-
+   var Title = "Create New Post";
 }
 <link href="~/lib/Trumbowyg-master/dist/ui/trumbowyg.min.css" rel="stylesheet" />
 <div class="d-flex" id="wrapper">
@@ -13,12 +13,19 @@
 
         <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
             <button class="btn btn-primary" id="menu-toggle">Toggle Menu</button>
-            <a class="btn btn-info" asp-controller="Portfolio" asp-action="List">Go Back To List</a>
+            <a class="btn btn-info" asp-controller="Post" asp-action="Index">Go Back To List</a>
         </nav>
 
         <div class="container-fluid">
             <form asp-controller="Panel" asp-action="Edit" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                @if (Model.Id != 0)
+                {
+                    //Edit
+                    Title = "Edit Template";
+                }
                 <input asp-for="Id" type="hidden" />
+                <h2>@Title</h2>
                 <div class="form-group">
                     <label>Title</label>
                     <input class="form-control" asp-for="Title" />

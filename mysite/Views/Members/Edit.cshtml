@@ -5,8 +5,6 @@
     
 }
 
-
-
 <div class="d-flex" id="wrapper">
 
     <partial name="_AdminNavbar" />
@@ -17,7 +15,6 @@
         <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
             <button class="btn btn-primary" id="menu-toggle">Toggle Menu</button>
         </nav>
-
         <div class="container-fluid">
             <form asp-controller="Members" asp-action="Edit" method="post" enctype="multipart/form-data">
                 @if (Model.Id != 0)
@@ -25,7 +22,7 @@
                     //Edit
                     Title = "Edit Member";
                 }
-
+                <h2>@Title</h2>
                 <input asp-for="Id" type="hidden" />
                 <div class="form-group">
                     <label>Username</label>
@@ -67,10 +64,10 @@
                     <input class="form-control" asp-for="City" />
                 </div>
                 @if (Model.Id != 0)
-                { 
-                  <div class="col-3 offset-1 pt-4">
-                      <img src="/content/blog/@Model.CurrentImage" width="100" style="border-radius:5px; border:1px solid #bbb9b9" />
-                  </div>
+                {
+                    <div class="col-3 offset-1 pt-4">
+                        <img src="/content/blog/@Model.CurrentImage" width="100" style="border-radius:5px; border:1px solid #bbb9b9" />
+                    </div>
                 }
                 <div class="form-group">
                     <label>Image</label>

@@ -30,17 +30,12 @@ namespace mysite.Controllers
 
         public IActionResult Index(int pageNumber, string category, string search, string orderBy)
         {
+            if (User.IsInRole("Admin"))
+                return View("Index");
             if (pageNumber < 1)
                 return RedirectToAction("Index", new { pageNumber = 1, category });
             var ports = _repo.GetAllPortfolios(pageNumber, category, search, orderBy);
-            return View(ports);
-        }
-
-        [Authorize(Roles = "Admin")]
-        public IActionResult List()
-        {
-            var ports = _repo.GetAllPortfolios();
-            return View(ports);
+            return View("ReadOnlyList", ports);
         }
 
         public ActionResult Details(int id)

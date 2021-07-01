@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using mysite.Data.FileManager;
 using mysite.Data.Repository;
@@ -24,29 +25,84 @@ namespace mysite.Controllers
             _repo = repo;
             _fileManager = fileManager;
            
-          
         }
         public IActionResult Index(int pageNumber, string category, string search, string orderBy) 
         {
+            if (User.IsInRole("Admin"))
+                return View("Index");
             if (pageNumber < 1)
                 return RedirectToAction("Index", new { pageNumber = 1, category });
-
             var vm = _repo.GetAllPosts(pageNumber, category, search, orderBy);
-            return View(vm);
-        }
-
-        //API CALLS
-
-        [HttpGet]
-        public IActionResult GetAll() 
-        {
-            var vm = _repo.GetAllPosts();
-            return Json(new { data = vm });
-        
+            return View("ReadOnlyList", vm);
         }
 
         public IActionResult Detail(int id) =>
          View(_repo.GetPost(id));
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public IActionResult Edit(int? id)
+        {
+            if (id == null)
+                return View(new PostViewModel());
+            else
+            {
+                var post = _repo.GetPost((int)id);
+                return View(new PostViewModel
+                {
+                    Id = post.Id,
+                    Title = post.Title,
+                    Body = post.Body,
+                    CurrentImage = post.Image,
+                    Description = post.Description,
+                    Category = post.Category,
+                    Tags = post.Tags
+                });
+
+            }
+        }
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public async Task<IActionResult> Edit(PostViewModel vm)
+        {
+            var post = new Post
+            {
+                Id = vm.Id,
+                Title = vm.Title,
+                Body = vm.Body,
+                Description = vm.Description,
+                Category = vm.Category,
+                Tags = vm.Tags
+
+            };
+            if (vm.Image == null)
+            {
+                post.Image = vm.CurrentImage;
+            }
+            else
+            {
+                post.Image = await _fileManager.SaveImage(vm.Image);
+
+            }
+
+            if (post.Id > 0)
+                _repo.UpdatePost(post);
+            else
+                _repo.AddPost(post);
+
+            if (await _repo.SaveChangeAsync())
+                return RedirectToAction("Index");
+            else
+                return View(post);
+        }
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<IActionResult> Remove(int id)
+        {
+            _repo.RemovePost(id);
+            await _repo.SaveChangeAsync();
+            return RedirectToAction("Index");
+        }
 
         [HttpGet("/Image/{image}")]
         [ResponseCache(CacheProfileName = "Monthly")]
